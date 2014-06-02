@@ -1,0 +1,5 @@
+nomralize-by-median.py foo.fa
+python optimize.py foo.fa
+mv foo_nbm.fa.keep foo_nbm.fa
+load-graph.py out foo_nbm.fa
+count-overlap
