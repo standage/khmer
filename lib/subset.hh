@@ -118,13 +118,13 @@ public:
     void count_partitions(size_t& n_partitions,
                           size_t& n_unassigned);
 
-    size_t output_partitioned_file(const std::string infilename,
-                                   const std::string outputfilename,
+    size_t output_partitioned_file(const std::string &infilename,
+                                   const std::string &outputfilename,
                                    bool output_unassigned=false,
                                    CallbackFn callback=0,
                                    void * callback_data=0);
 
-    unsigned int find_unpart(const std::string infilename,
+    unsigned int find_unpart(const std::string &infilename,
                              bool traverse,
                              bool stop_big_traversals,
                              CallbackFn callback=0,
