@@ -635,8 +635,8 @@ CountingHashGzFileReader::CountingHashGzFileReader(
         HashIntoType kmer;
         BoundedCounterType count;
 
-        int read_k, read_c;
         for (HashIntoType n = 0; n < n_counts; n++) {
+            int read_k, read_c;
             read_k = gzread(infile, (char *) &kmer, sizeof(kmer));
             read_c = gzread(infile, (char *) &count, sizeof(count));
 
