@@ -9,6 +9,8 @@
 #include <string>
 #include <iostream>
 #include <algorithm>
+#include <functional>
+#include <string>
 
 #include "khmer.hh"
 #include "kmer_hash.hh"
@@ -45,6 +47,13 @@ HashIntoType _hash(const char * kmer, const WordLength k,
 
     _h = h;
     _r = r;
+
+   // using a string of the lower valued kmer for hashing.
+    string result = to_string(uniqify_rc(h,r));
+    hash<string> kmer_str_hash;
+    string hashed = to_string(kmer_str_hash(result));
+    cout << "TESTING C++ HASH: " << hashed << endl;
+    // Hash the resulting lower kmer to the specified digest size
 
     return uniqify_rc(h, r);
 }
