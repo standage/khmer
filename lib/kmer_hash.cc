@@ -29,7 +29,7 @@ HashIntoType _hash(const char * kmer, const WordLength k,
 {
     // sizeof(HashIntoType) * 8 bits / 2 bits/base
     if (!(k <= sizeof(HashIntoType)*4) || !(strlen(kmer) >= k)) {
-        throw khmer_exception("Supplied kmer string doesn't match the underlying k-size.");
+      cout << "Testing Different K-Size" << endl; 
     }
 
     HashIntoType h = 0, r = 0;
@@ -54,6 +54,7 @@ HashIntoType _hash(const char * kmer, const WordLength k,
     string hashed = to_string(kmer_str_hash(result));
     cout << "TESTING C++ HASH: " << hashed << endl;
     // Hash the resulting lower kmer to the specified digest size
+  
 
     return uniqify_rc(h, r);
 }

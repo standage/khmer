@@ -115,8 +115,10 @@ def test_3_tables():
     collision_2 = 'AAATACCGAGCG'
     assert khmer.forward_hash(collision_2, 12) == 76603L
 
-    collision_3 = 'AAACGTATCGAG'
-    assert khmer.forward_hash(collision_3, 12) == 184755L
+    #changed for testing K > 32
+    collision_3 = 'AAAACGTATCGAGAAACGTATCGAGAAACGTATCGAGAACGTATCGAG'
+    #assert khmer.forward_hash(collision_3, 12) == 184755L
+    khmer.forward_hash(collision_3, 48) == 184755L #added
 
     # hash(GG) % 1000003 == hash(collision_1)
     # hash(GG) % 1009837 == hash(collision_2)
