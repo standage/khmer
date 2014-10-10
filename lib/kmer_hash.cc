@@ -11,7 +11,6 @@
 #include <algorithm>
 #include <functional>
 #include <string>
-#include <gmpxx.h>
 
 #include "khmer.hh"
 #include "kmer_hash.hh"
@@ -25,15 +24,15 @@ using namespace std;
 namespace khmer
 {
 
-unsigned __int128 _hash(const char * kmer, const WordLength k,
-                   unsigned __int128 &_h, unsigned __int128 &_r)
+HashIntoType _hash(const char * kmer, const WordLength k,
+                   __uint128_t &_h, __uint128_t &_r)
 {
-    // sizeof(HashIntoType) * 8 bits / 2 bits/base
+    // sizeof(hashintotype) * 8 bits / 2 bits/base
     if (!(k <= sizeof(HashIntoType)*4) || !(strlen(kmer) >= k)) {
       cout << "Testing Different K-Size" << endl; 
     }
 
-    unsigned __int128 h = 0, r = 0;
+    __uint128_t h = 0, r = 0;
 
     h |= twobit_repr(kmer[0]);
     r |= twobit_comp(kmer[k-1]);
@@ -49,14 +48,12 @@ unsigned __int128 _hash(const char * kmer, const WordLength k,
     _h = h;
     _r = r;
 
-   // using a string of the lower valued kmer for hashing.
-    hash<unsigned long long> kmer_ULL_hash;
-    //string hashed = to_string(kmer_ULL_hash(result));
-    unsigned long long hashed_h = kmer_ULL_hash(h);
-    unsigned long long hashed_r = kmer_ULL_hash(r);
-    cout << "TESTING C++ HASH: " << hashed << endl;
-    // Hash the resulting lower kmer to the specified digest size
+   // hash both the forward and reverse bit representations
+    hash<HashIntoType> kmer_ULL_hash;
+    HashIntoType hashed_h = kmer_ULL_hash(h);
+    HashIntoType hashed_r = kmer_ULL_hash(r);
     
+    // return the lower hash value
     return uniqify_rc(hashed_h, hashed_r);
 }
 
