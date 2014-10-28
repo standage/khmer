@@ -67,12 +67,11 @@
 namespace khmer
 {
 // two-way hash functions.
-HashIntoType _hash(const char * kmer, const WordLength k);
-HashIntoType _hash(const char * kmer, const WordLength k,
-                   HashIntoType& h, HashIntoType& r);
-HashIntoType _hash_forward(const char * kmer, WordLength k);
+unsigned long long _hash(const char * kmer, const WordLength k);
+unsigned long long _hash(const char * kmer, const WordLength k, __uint128_t &_h, __uint128_t &_r);
+unsigned long long _hash_forward(const char * kmer, WordLength k);
 
-std::string _revhash(HashIntoType hash, WordLength k);
+std::string _revhash(unsigned long long hash, WordLength k);
 };
 
 #endif // KMER_HASH_HH
