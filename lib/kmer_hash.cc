@@ -24,11 +24,11 @@ using namespace std;
 namespace khmer
 {
 
-unsigned long long hash(const char * kmer, const WordLength k,
+HashIntoType _hash(const char * kmer, const WordLength k,
                    __uint128_t &_h, __uint128_t &_r)
 {
-    // sizeof(unsigned long long) * 8 bits / 2 bits/base
-    if (!(k <= sizeof(unsigned long long)*4) || !(strlen(kmer) >= k)) {
+    // sizeof(HashIntoType) * 8 bits / 2 bits/base
+    if (!(k <= sizeof(HashIntoType)*4) || !(strlen(kmer) >= k)) {
       cout << "Testing Different K-Size" << endl; 
     }
 
@@ -49,32 +49,27 @@ unsigned long long hash(const char * kmer, const WordLength k,
     _r = r;
 
    // hash both the forward and reverse bit representations
-    hash<unsigned long long> kmer_ULL_hash;
-    unsigned long long hashed_h = kmer_ULL_hash(h);
-    unsigned long long hashed_r = kmer_ULL_hash(r);
-    
-    // return the lower hash value
-    return uniqify_rc(hashed_h, hashed_r);
+    return uniqify_rc(h, r);
 }
 
 // _hash: return the maximum of the forward and reverse hash.
 
-unsigned long long hash(const char * kmer, const WordLength k)
+HashIntoType _hash(const char * kmer, const WordLength k)
 {
-    unsigned long long h = 0;
-    unsigned long long r = 0;
+    HashIntoType h = 0;
+    HashIntoType r = 0;
 
-    return hash(kmer, k, h, r);
+    return _hash(kmer, k, h, r);
 }
 
 // _hash_forward: return the hash from the forward direction only.
 
-unsigned long long hash_forward(const char * kmer, WordLength k)
+HashIntoType hash_forward(const char * kmer, WordLength k)
 {
-    unsigned long long h = 0;
-    unsigned long long r = 0;
+    HashIntoType h = 0;
+    HashIntoType r = 0;
 
-    hash(kmer, k, h, r);
+    khmer::_hash(kmer, k, h, r);
     return h;			// return forward only
 }
 
@@ -82,11 +77,22 @@ unsigned long long hash_forward(const char * kmer, WordLength k)
 // _revhash: given an unsigned int, return the associated k-mer.
 //
 
-std::string _revhash(unsigned long long hash, WordLength k)
+std::string _revhash(HashIntoType hash, WordLength k)
 {
     std::string s = "";
+
+    unsigned long val = hash & 3;
+    s += revtwobit_repr(val);
+
+    for (WordLength i = 1; i < k; i++) {
+        hash = hash >> 2;
+        val = hash & 3;
+        s += revtwobit_repr(val);
+    }
+
+    reverse(s.begin(), s.end());
+
     return s;
 }
-
 
 };
