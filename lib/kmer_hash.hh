@@ -75,5 +75,6 @@ HashIntoType _hash_forward(const char * kmer, WordLength k);
 
 std::string _revhash(HashIntoType hash, WordLength k);
 
+long getHashvalues(int c);
 };
 #endif // KMER_HASH_HH

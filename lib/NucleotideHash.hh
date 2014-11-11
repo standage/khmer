@@ -1,5 +1,4 @@
-class NucleotideHash()
-{
+class NucleotideHash() {
   public:
     NucleotideHash(){
       for (int k = 0; k < hashvalues.length(); ++k) 

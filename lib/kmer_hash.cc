@@ -29,7 +29,6 @@ HashIntoType _hash(const char * kmer, const WordLength k,
 {
   // constants FTW
   NucleotideHash *hasher = NucleotideHash();
-  const int WordLength = 64;
   int n;
   // Using random for hash vals
   std::default_random_engine DRE;
