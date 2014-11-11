@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <string>
+#include <random>
 
 #include "khmer.hh"
 
@@ -73,6 +74,6 @@ HashIntoType _hash(const char * kmer, const WordLength k,
 HashIntoType _hash_forward(const char * kmer, WordLength k);
 
 std::string _revhash(HashIntoType hash, WordLength k);
-};
 
+};
 #endif // KMER_HASH_HH
