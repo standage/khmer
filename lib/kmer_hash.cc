@@ -12,7 +12,6 @@
 
 #include "khmer.hh"
 #include "kmer_hash.hh"
-#include "NucleotideHash.hh"
 
 using namespace std;
 
@@ -28,99 +27,7 @@ HashIntoType _hash(const char * kmer, const WordLength k,
                    HashIntoType& _h, HashIntoType& _r)
 {
   // constants FTW
-  NucleotideHash *hasher = NucleotideHash();
-  int n;
-  // Using random for hash vals
-  std::default_random_engine DRE;
-  std::uniform_int_distribution<long> dist(1047483646,2147483646);
-
-  // Instatiating the Nucleotide hash
-
-  long getHashvalues(int c)
-  {
-    if(c > 3 || c < 0)
-      throw khmer_exception();    
-    return hasher.GetHashvalue(c);
-  }// of getHashvalues
-
-  void CyclicHash(int my_int)
-  {
-    n = my_int;
-    if (n > WordLength) 
-    {
-      throw khmer_exception();
-    }
-  }
-
-  // Bitwise Shifting 
-  long fastLeftShiftN(long x)
-  {
-    return (x << n) | (x >> (WordLength - n));
-  }
-
-  long fastLeftShift1(long x)
-  {
-    return (x << 1) | (x >> (WordLength - 1));
-  }
-
-  long fastRightShiftN(long x)
-  {
-    return (x >> n) | (x << (WordLength - n));
-  }
-
-  long fastRightShift1(long x)
-  {
-    return (x >> 1) | (x << (WordLength - 1));
-  }
-
-  long eatRight(long hashval, int c)
-  {
-    hashval = fastLeftShift1(hashval);
-    hashval ^= hasher.hashvalues[c];
-    return hashval;
-  }
-
-  long eatLeft(long hashval, int c)
-  {
-    hashval = fastRightShift1(hashval ^ fastLeftShiftN(hasher.hashvalues[c]))
-      return hashval;
-  }
-
-  long getInitialHashvalue(std::string s)
-  {
-    long hashvalue = 0;
-    for (int i = 0; i < n; i++) 
-    {
-      hashvalue = fastLeftShift1(hashvalue);
-      int idx = 0;
-      switch (s.at(i)) 
-      {
-        case 'A':
-        case 'a':
-          idx = 0;
-          break; 
-        case 'C':
-        case 'c':
-          idx = 1;
-          break; 
-        case 'G':
-        case 'g':
-          idx = 2;
-          break; 
-        case 'T':
-        case 't':
-        case 'U':
-        case 'u':
-          idx = 3;
-          break; 
-        default:
-          throw khmer_exception(); 
-      }// of Switch
-      hashvalue ^= hasher.getHashvalue(idx);
-    }
-    return hashvalue;
-  }
-
+  NucleotideHash hasher;
 
   // sizeof(HashIntoType) * 8 bits / 2 bits/base
   if (!(k <= sizeof(HashIntoType)*4) || !(strlen(kmer) >= k)) {
@@ -144,6 +51,83 @@ HashIntoType _hash(const char * kmer, const WordLength k,
   _r = r;
 
   return uniqify_rc(h, r);
+}
+
+void CyclicHash(int myint, const WordLength k)
+{
+  if (myint > WordLength) 
+  {
+    throw khmer_exception();
+  }
+}
+
+// Bitwise Shifting 
+long NucleotideHash::fastLeftShiftN(long x, const WordLength k)
+{
+  return (x << n) | (x >> (WordLength - n));
+}
+
+long NucleotideHash::fastLeftShift1(long x, const WordLength k)
+{
+  return (x << 1) | (x >> (WordLength - 1));
+}
+
+long NucleotideHash::fastRightShiftN(long x, const WordLength k)
+{
+  return (x >> n) | (x << (WordLength - n));
+}
+
+long NucleotideHash::fastRightShift1(long x, const WordLength k)
+{
+  return (x >> 1) | (x << (WordLength - 1));
+}
+
+long eatRight(long hashval, int c)
+{
+  hashval = fastLeftShift1(hashval);
+  hashval ^= hasher.hashvalues[c];
+  return hashval;
+}
+
+long eatLeft(long hashval, int c)
+{
+  hashval = fastRightShift1(hashval ^ fastLeftShiftN(hasher.hashvalues[c]))
+    return hashval;
+}
+
+long NucleotideHash::getInitialHashvalue(std::string s)
+{
+  long hashvalue = 0;
+  for (int i = 0; i < n; i++) 
+  {
+    hashvalue = fastLeftShift1(hashvalue);
+    int idx = 0;
+    switch (s.at(i)) 
+    {
+      case 'A':
+      case 'a':
+        idx = 0;
+        break; 
+      case 'C':
+      case 'c':
+        idx = 1;
+        break; 
+      case 'G':
+      case 'g':
+        idx = 2;
+        break; 
+      case 'T':
+      case 't':
+      case 'U':
+      case 'u':
+        idx = 3;
+        break; 
+      default:
+        throw khmer_exception(); 
+    }// of Switch
+    hashvalue ^= hasher.GetHashValue(idx);
+  }
+  return hashvalue;
 }
 
 // _hash: return the maximum of the forward and reverse hash.
