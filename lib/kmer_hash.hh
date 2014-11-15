@@ -75,6 +75,7 @@ HashIntoType _hash_forward(const char * kmer, WordLength k);
 
 std::string _revhash(HashIntoType hash, WordLength k);
 HashIntoType _cyclichash(std::string kmer_string, WordLength k);
+HashIntoType _revcyclichash(std::string kmer_string, WordLength k);
 
 
 };

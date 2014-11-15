@@ -35,16 +35,8 @@ HashIntoType _hash(const char * kmer, const WordLength k,
 
   HashIntoType h = 0, r = 0;
 
-  h |= twobit_repr(kmer[0]);
-  r |= twobit_comp(kmer[k-1]);
-
-  for (WordLength i = 1, j = k - 2; i < k; i++, j--) {
-    h = h << 2;
-    r = r << 2;
-
-    h |= twobit_repr(kmer[i]);
-    r |= twobit_comp(kmer[j]);
-  }
+  h = _cyclichash(kmer, k);
+  r = _revcyclichash(kmer, k);
 
   _h = h;
   _r = r;
@@ -93,6 +85,45 @@ HashIntoType _cyclichash(std::string kmer_string, const WordLength k)
   return hashvalue;
 }
 
+HashIntoType _revcyclichash(std::string kmer_string, const WordLength k)
+{
+  // Our list of random numbers for each base value
+  // Hard coding in random vals from array
+  // Random values generated from www.random.org
+  HashIntoType vals[] = {491989698, 127908739, 392233993, 303837760}; 
+  std::vector<HashIntoType> compliment_random_base_vals (vals, vals + sizeof(vals) / sizeof(vals));
+
+  HashIntoType hashvalue = 0;
+
+  // Iterate through the kmer backwards, hashing each base 
+  for (int i = kmer_string.length(); i > -1; i--) 
+  {
+    // A circular bitshift (http://en.wikipedia.org/wiki/Circular_shift)
+    hashvalue = (hashvalue << 1 | hashvalue >> (k - 1));
+    
+    // Hash each letter of the current kmer
+    switch (kmer_string[i]) 
+    {
+      case 'A':
+      case 'a':
+        hashvalue ^= compliment_random_base_vals[0];
+      case 'C':
+      case 'c':
+        hashvalue ^= compliment_random_base_vals[1];
+      case 'G':
+      case 'g':
+        hashvalue ^= compliment_random_base_vals[2];
+      case 'T':
+      case 't':
+      case 'U':
+      case 'u':
+        hashvalue ^= compliment_random_base_vals[3];
+      default:
+        throw khmer_exception(); 
+    }// of Switch
+  }
+  return hashvalue;
+}
 // _hash: return the maximum of the forward and reverse hash.
 
 HashIntoType _hash(const char * kmer, const WordLength k)
