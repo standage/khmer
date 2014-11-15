@@ -27,8 +27,7 @@ HashIntoType _hash(const char * kmer, const WordLength k,
                    HashIntoType& _h, HashIntoType& _r)
 {
   // constants FTW
-  NucleotideHash hasher;
-
+  
   // sizeof(HashIntoType) * 8 bits / 2 bits/base
   if (!(k <= sizeof(HashIntoType)*4) || !(strlen(kmer) >= k)) {
     throw khmer_exception("Supplied kmer string doesn't match the underlying k-size.");
@@ -53,79 +52,43 @@ HashIntoType _hash(const char * kmer, const WordLength k,
   return uniqify_rc(h, r);
 }
 
-void CyclicHash(int myint, const WordLength k)
-{
-  if (myint > WordLength) 
-  {
-    throw khmer_exception();
-  }
-}
-
 // Bitwise Shifting 
-long NucleotideHash::fastLeftShiftN(long x, const WordLength k)
+HashIntoType _cyclichash(std::string kmer_string, const WordLength k)
 {
-  return (x << n) | (x >> (WordLength - n));
-}
+  // Our list of random numbers for each base value
+  // Hard coding in random vals from array
+  // Random values generated from www.random.org
+  HashIntoType vals[] = {303837760, 392233993, 127908739, 491989698}; 
+  std::vector<HashIntoType> random_base_vals (vals, vals + sizeof(vals) / sizeof(vals));
 
-long NucleotideHash::fastLeftShift1(long x, const WordLength k)
-{
-  return (x << 1) | (x >> (WordLength - 1));
-}
+  HashIntoType hashvalue = 0;
 
-long NucleotideHash::fastRightShiftN(long x, const WordLength k)
-{
-  return (x >> n) | (x << (WordLength - n));
-}
-
-long NucleotideHash::fastRightShift1(long x, const WordLength k)
-{
-  return (x >> 1) | (x << (WordLength - 1));
-}
-
-long eatRight(long hashval, int c)
-{
-  hashval = fastLeftShift1(hashval);
-  hashval ^= hasher.hashvalues[c];
-  return hashval;
-}
-
-long eatLeft(long hashval, int c)
-{
-  hashval = fastRightShift1(hashval ^ fastLeftShiftN(hasher.hashvalues[c]))
-    return hashval;
-}
-
-long NucleotideHash::getInitialHashvalue(std::string s)
-{
-  long hashvalue = 0;
-  for (int i = 0; i < n; i++) 
+  // Iterate through the kmer, hashing each 
+  for (int i = 0; i < kmer_string.length(); i++) 
   {
-    hashvalue = fastLeftShift1(hashvalue);
-    int idx = 0;
-    switch (s.at(i)) 
+    // A circular bitshift (http://en.wikipedia.org/wiki/Circular_shift)
+    hashvalue = (hashvalue << 1 | hashvalue >> (k - 1));
+    
+    // Hash each letter of the current kmer
+    switch (kmer_string[i]) 
     {
       case 'A':
       case 'a':
-        idx = 0;
-        break; 
+        hashvalue ^= random_base_vals[0];
       case 'C':
       case 'c':
-        idx = 1;
-        break; 
+        hashvalue ^= random_base_vals[1];
       case 'G':
       case 'g':
-        idx = 2;
-        break; 
+        hashvalue ^= random_base_vals[2];
       case 'T':
       case 't':
       case 'U':
       case 'u':
-        idx = 3;
-        break; 
+        hashvalue ^= random_base_vals[3];
       default:
         throw khmer_exception(); 
     }// of Switch
-    hashvalue ^= hasher.GetHashValue(idx);
   }
   return hashvalue;
 }

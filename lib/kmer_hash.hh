@@ -74,33 +74,8 @@ HashIntoType _hash(const char * kmer, const WordLength k,
 HashIntoType _hash_forward(const char * kmer, WordLength k);
 
 std::string _revhash(HashIntoType hash, WordLength k);
+HashIntoType _cyclichash(std::string kmer_string, WordLength k);
 
-class NucleotideHash {
-  public:
-    NucleotideHash(){
-      std::default_random_engine DRE;
-      std::uniform_int_distribution<long> Dr;
-      mHashvalues = new long[4];
-      for (int k = 0; k < 4; k++) 
-      {
-        mHashvalues[k] = Dr(DRE); 
-      }
-    }
-    long GetHashValue(int c) { 
-      if(c > 3 || c < 0)
-        throw khmer_exception();    
-      return mHashvalues[c]; 
-    }
 
-      long getInitialHashvalue(std::string s);
-      long fastLeftShiftN(long x, const WordLength k);
-      void CyclicHash(int myint, const WordLength k);
-      long fastLeftShift1(long x, const WordLength k);
-      long fastRightShiftN(long x, const WordLength k);
-
-    private:
-      long *mHashvalues;
-      int n;
-};
 };
 #endif // KMER_HASH_HH
