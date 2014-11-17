@@ -13,7 +13,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <string>
-#include <random>
 
 #include "khmer.hh"
 
