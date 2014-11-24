@@ -1024,6 +1024,40 @@ static PyObject * hash_abundance_distribution_with_reads_parser(
     PyObject * self,
     PyObject * args);
 
+static PyObject * hash_get_raw_tables(PyObject * self, PyObject * args)
+{
+    khmer_KCountingHashObject * me = (khmer_KCountingHashObject *) self;
+    CountingHash * counting = me->counting;
+
+    Byte ** table_ptrs = counting->get_raw_tables();
+    std::vector<HashIntoType> sizes = counting->get_tablesizes();
+
+    PyObject * raw_tables = PyList_New(sizes.size());
+    for (unsigned int i=0; i<sizes.size(); ++i) {
+        /*
+        Py_buffer * buf = (Py_buffer * ) table_ptrs[i];
+        buf->obj = NULL;
+        buf->len = sizes[i];
+        buf->readonly = 1;
+        buf->ndim = 1;
+        buf->format = NULL;
+        buf->shape = NULL;
+        buf->strides = NULL;
+        buf->suboffsets = NULL;
+        buf->internal = NULL;
+        bufs.push_back(buf);
+        */
+        PyObject * buf = PyBuffer_FromMemory(table_ptrs[i], sizes[i]);
+        if(!PyBuffer_Check(buf))
+            return NULL;
+        PyList_SET_ITEM(raw_tables, i, buf);
+        //Py_XDECREF(buf);
+    }
+    
+    return raw_tables;
+}
+
+
 static PyObject * hash_set_use_bigcount(PyObject * self, PyObject * args)
 {
     khmer_KCountingHashObject * me = (khmer_KCountingHashObject *) self;
@@ -1768,6 +1802,7 @@ static PyMethodDef khmer_counting_methods[] = {
     },
     { "output_fasta_kmer_pos_freq", hash_output_fasta_kmer_pos_freq, METH_VARARGS, "" },
     { "get", hash_get, METH_VARARGS, "Get the count for the given k-mer" },
+    { "get_raw_tables", hash_get_raw_tables, METH_VARARGS, "Get a list of the raw tables as memoryview objects" },
     { "get_min_count", hash_get_min_count, METH_VARARGS, "Get the smallest count of all the k-mers in the string" },
     { "get_max_count", hash_get_max_count, METH_VARARGS, "Get the largest count of all the k-mers in the string" },
     { "get_median_count", hash_get_median_count, METH_VARARGS, "Get the median, average, and stddev of the k-mer counts in the string" },
