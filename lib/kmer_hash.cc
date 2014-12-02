@@ -51,7 +51,7 @@ HashIntoType _cyclichash(std::string kmer_string, const WordLength k)
   // Hard coding in random vals from array
   // Random values generated from www.random.org
   HashIntoType vals[] = {303837760, 392233993, 127908739, 491989698}; 
-  std::vector<HashIntoType> random_base_vals (vals, vals + sizeof(vals) / sizeof(vals));
+  //std::vector<HashIntoType> random_base_vals (vals, vals + sizeof(vals) / sizeof(vals));
 
   HashIntoType hashvalue = 0;
 
@@ -66,18 +66,18 @@ HashIntoType _cyclichash(std::string kmer_string, const WordLength k)
     {
       case 'A':
       case 'a':
-        hashvalue ^= random_base_vals[0];
+        hashvalue ^= vals[0];
       case 'C':
       case 'c':
-        hashvalue ^= random_base_vals[1];
+        hashvalue ^= vals[1];
       case 'G':
       case 'g':
-        hashvalue ^= random_base_vals[2];
+        hashvalue ^= vals[2];
       case 'T':
       case 't':
       case 'U':
       case 'u':
-        hashvalue ^= random_base_vals[3];
+        hashvalue ^= vals[3];
       default:
         throw khmer_exception(); 
     }// of Switch
@@ -90,8 +90,8 @@ HashIntoType _revcyclichash(std::string kmer_string, const WordLength k)
   // Our list of random numbers for each base value
   // Hard coding in random vals from array
   // Random values generated from www.random.org
-  HashIntoType vals[] = {491989698, 127908739, 392233993, 303837760}; 
-  std::vector<HashIntoType> compliment_random_base_vals (vals, vals + sizeof(vals) / sizeof(vals));
+  HashIntoType compliment_vals[] = {491989698, 127908739, 392233993, 303837760}; 
+  //std::vector<HashIntoType> compliment_random_base_vals (vals, vals + sizeof(vals) / sizeof(vals));
 
   HashIntoType hashvalue = 0;
 
@@ -106,18 +106,18 @@ HashIntoType _revcyclichash(std::string kmer_string, const WordLength k)
     {
       case 'A':
       case 'a':
-        hashvalue ^= compliment_random_base_vals[0];
+        hashvalue ^= compliment_vals[0];
       case 'C':
       case 'c':
-        hashvalue ^= compliment_random_base_vals[1];
+        hashvalue ^= compliment_vals[1];
       case 'G':
       case 'g':
-        hashvalue ^= compliment_random_base_vals[2];
+        hashvalue ^= compliment_vals[2];
       case 'T':
       case 't':
       case 'U':
       case 'u':
-        hashvalue ^= compliment_random_base_vals[3];
+        hashvalue ^= compliment_vals[3];
       default:
         throw khmer_exception(); 
     }// of Switch
