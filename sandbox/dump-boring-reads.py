@@ -46,7 +46,7 @@ import sys
 
 import screed
 import khmer
-from khmer.khmer_args import build_nodegraph_args
+from khmer.khmer_args import build_nodegraph_args, create_nodegraph
 
 
 def main():
@@ -68,7 +68,7 @@ def main():
             (args.n_tables * args.max_tablesize), file=sys.stderr)
         print('-' * 8, file=sys.stderr)
 
-    refrgraph = khmer.Nodegraph(args.ksize, arg.max_tablesize, args.n_tables)
+    refrgraph = create_nodegraph(args)
     nreads, nconsumed = refrgraph.consume_fasta(args.reference)
     if not args.quiet:
         message = 'consumed {:d} reads and {:d} bp from {:s}'.format(
