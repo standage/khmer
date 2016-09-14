@@ -1491,3 +1491,25 @@ def test_counting_load_bigcount():
         print(i, count_table.count('ATATATATAT'))
     count = count_table.get('ATATATATAT')
     assert count == 500
+
+
+def test_reverse_bighash():
+    hi = khmer._Countgraph(31, PRIMES_1m)
+    kmer = 'C' * 31
+    hashval = hi.hash('C' * 31)
+    assert hi.reverse_hash(hashval) == kmer
+
+    hi = khmer._Countgraph(33, PRIMES_1m)
+    kmer = 'C' * 33
+    hashval = hi.hash('C' * 33)
+    assert hi.reverse_hash(hashval) != kmer
+
+    hi = khmer._Countgraph(63, PRIMES_1m)
+    kmer = 'C' * 63
+    hashval = hi.hash('C' * 63)
+    assert hi.reverse_hash(hashval) != kmer
+
+    hi = khmer._Countgraph(127, PRIMES_1m)
+    kmer = 'C' * 127
+    hashval = hi.hash('C' * 127)
+    assert hi.reverse_hash(hashval) != kmer
