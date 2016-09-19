@@ -51,7 +51,7 @@ from khmer.khmer_args import build_nodegraph_args, create_nodegraph
 
 def main():
     parser = build_nodegraph_args()
-    parser.add_argument('-m', '--allowed-mismatches', type=int)
+    parser.add_argument('-m', '--allowed-mismatches', type=int, default=0)
     parser.add_argument('reference')
     parser.add_argument('readfiles', nargs='+')
     args = parser.parse_args()
